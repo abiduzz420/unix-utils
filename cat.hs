@@ -19,8 +19,9 @@ collect = mapM $ try . L.readFile
 display :: [Either IOException FileContent] -> IO()
 display []    = L.getContents >>= L.putStr
 display files = do
+        let hasFailure = any isLeft files
         mapM toConsole files
-        when (any isLeft files) exitFailure
+        when hasFailure exitFailure
     where
         toConsole (Left exception) = hPutStrLn stderr $ show exception
         toConsole (Right content)  = L.putStrLn content
